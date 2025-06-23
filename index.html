@@ -1,0 +1,57 @@
+<!--remove this section - for guidance only
+folder structure /scraper
+├── index.html
+├── scraper.php
+├── text_image_scraper.py -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Website Scraper</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea { width: 100%; height: 200px; margin-top: 10px; }
+    .section { margin-bottom: 30px; }
+  </style>
+</head>
+<body>
+  <h1>Website Text & Image URL Scraper</h1>
+  <form id="scrapeForm">
+    <label for="url">Enter Website URL:</label><br>
+    <input type="text" id="url" name="url" required style="width: 100%;"><br><br>
+    <button type="submit">Scrape Website</button>
+  </form>
+
+  <div class="section">
+    <h2>Extracted Text</h2>
+    <textarea id="textOutput" readonly></textarea>
+  </div>
+
+  <div class="section">
+    <h2>Image URLs</h2>
+    <textarea id="imageOutput" readonly></textarea>
+  </div>
+
+  <script>
+    document.getElementById("scrapeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const url = document.getElementById("url").value;
+
+      fetch("scraper.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "url=" + encodeURIComponent(url)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("textOutput").value = data.text.join("\\n");
+        document.getElementById("imageOutput").value = data.images.join("\\n");
+      })
+      .catch(err => {
+        alert("Error: " + err);
+      });
+    });
+  </script>
+</body>
+</html>
